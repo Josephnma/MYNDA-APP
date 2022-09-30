@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Mynda.Persistence.UnitOfWork
 {
-    public interface IUnitOfWork
+    public interface IUnitOfWork : IDisposable
     {
+        Task Save();
     }
 }
