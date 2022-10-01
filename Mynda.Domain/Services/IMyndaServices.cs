@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Mynda.Shared.GlobalException
+namespace Mynda.Domain.Services
 {
-    public class GlobalException
+    public interface IMyndaServices
     {
     }
 }
