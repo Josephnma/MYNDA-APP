@@ -40,7 +40,7 @@ builder.Host.UseSerilog();
 
 builder.Services.AddDbContext<MyndaDbContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehaviour", true);
 
