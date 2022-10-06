@@ -9,9 +9,9 @@ namespace Mynda.Domain.Services
 {
     public class MyndaServices
     {
-        private readonly MyndaDBContext _Db;
+        private readonly MyndaDbContext _Db;
 
-        public MyndaServices(MyndaDBContext db)
+        public MyndaServices(MyndaDbContext db)
         {
             _Db = db;
         }

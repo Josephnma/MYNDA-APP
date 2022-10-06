@@ -11,10 +11,10 @@ namespace Mynda.Persistence.Repository
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private readonly MyndaDBContext _context;
+        private readonly MyndaDbContext _context;
         private readonly DbSet<T> _db;
 
-        public GenericRepository(MyndaDBContext context)
+        public GenericRepository(MyndaDbContext context)
         {
             _context = context;
             _db = _context.Set<T>();
