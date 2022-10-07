@@ -1,27 +1,37 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Mynda.Persistence.Entities
 {
-    public class Mynda : IdentityUser
+    public class Myndas
     {
+        public int Id { get; set; }
+
+        [ForeignKey("Users")]
+        public string UserId { get; set; }
+        public User Users { get; set; }
+
+        [ForeignKey("EducationDetails")]
         public int Education { get; set; }
         public Education EducationDetails { get; set; }
 
+
+        [ForeignKey("GuarantorDetails")]
         public int Guarantor { get; set; }
         public Guarantor GuarantorDetails { get; set; }
 
+
+        [ForeignKey("Reviews")]
         public int Review { get; set; }
         public Reviews Reviews { get; set; }
 
+
+        [ForeignKey("PhotoProfiles")]
         public int PhotoProfile { get; set; }
         public PhotoProfile PhotoProfiles { get; set; }
 
+
+        [ForeignKey("WorkExperienceDetails")]
         public int WorkExperience { get; set; }
         public WorkExperience WorkExperienceDetails { get; set; }
 
@@ -45,7 +55,7 @@ namespace Mynda.Persistence.Entities
 
         public string? AboutMe { get; set; }
 
-        public string? height { get; set; }
+        public string? Height { get; set; }
 
     }
 }

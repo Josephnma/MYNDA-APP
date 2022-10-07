@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 
 namespace Mynda.Persistence.Entities
 {
-    public class UserRoles : IdentityUserRole<int>
+    public class User : IdentityUser
     {
-        public Myndas? Mynda { get; set; }
-        public AppRole? Role { get; set; }
+        
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        
     }
 }

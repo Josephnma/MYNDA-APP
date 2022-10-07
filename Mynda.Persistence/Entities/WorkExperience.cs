@@ -21,7 +21,7 @@ namespace Mynda.Persistence.Entities
         public enum EmploymentType
         {
             FullTime,
-            Partime,
+            PartTime,
             Freelance,
             Remote
         }

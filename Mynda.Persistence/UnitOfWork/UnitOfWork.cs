@@ -1,24 +1,21 @@
 ﻿using Mynda.Persistence.DbContext;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Mynda.Persistence.Repository;
+
 
 namespace Mynda.Persistence.UnitOfWork
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly MyndaDBContext _context;
-        //private IGenericRepository<> _;
+        private readonly MyndaDbContext _context;
+        private IGenericRepository<Entities.Myndas> _myndas;
 
 
-        public UnitOfWork(MyndaDBContext context)
+        public UnitOfWork(MyndaDbContext context)
         {
             _context = context;
-
         }
-        //  public IGenericRepository<>  => _ ??= new GenericRepository<>(_context);
+        
+        public IGenericRepository<Entities.Myndas> Myndas  => _myndas ??= new GenericRepository<Entities.Myndas>(_context);
 
         public void Dispose()
         {

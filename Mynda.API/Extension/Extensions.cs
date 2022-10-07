@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Mynda.Persistence.DbContext;
 using Mynda.Persistence.Entities;
 using Serilog;
@@ -26,20 +27,20 @@ namespace Mynda.API.Extension
 
         public static void ConfigureIdentity(this IServiceCollection services)
         {
-            var builder = services.AddIdentityCore<AppRole>(q => q.User.RequireUniqueEmail = true);
+            var builder = services.AddIdentityCore<User>(q => q.User.RequireUniqueEmail = true);
 
             builder = new IdentityBuilder(builder.UserType, typeof(IdentityRole), services);
-            builder.AddEntityFrameworkStores<MyndaDBContext>().AddDefaultTokenProviders();
+            builder.AddEntityFrameworkStores<MyndaDbContext>().AddDefaultTokenProviders();
         }
 
 
+        public static void ConfigureNpgsqlContext(this IServiceCollection services, IConfiguration configuration) =>
+            services.AddDbContext<MyndaDbContext>(options =>
+                options.UseNpgsql(configuration.GetConnectionString("sqlConnection"))
+                );
 
-        /*public static void ConfigureRepositoryManager(this IServiceCollection services) =>
-            services.AddScoped<IRepositoryManager, RepositoryManager>();
-        public static void ConfigureServiceManager(this IServiceCollection services) =>
-            services.AddScoped<IServiceManager, ServiceManager>();
-        public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration configuration) =>
-            services.AddDbContext<RepositoryContext>(options => options.UseSqlServer(configuration.GetConnectionString("sqlConnection")));*/
+
+       
 
     }
 }

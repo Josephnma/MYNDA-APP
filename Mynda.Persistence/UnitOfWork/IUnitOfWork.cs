@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Mynda.Persistence.Repository;
 
 namespace Mynda.Persistence.UnitOfWork
 {
     public interface IUnitOfWork : IDisposable
     {
+        IGenericRepository<Entities.Myndas> Myndas { get; }
         Task Save();
     }
 }

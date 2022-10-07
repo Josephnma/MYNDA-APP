@@ -1,22 +1,20 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Mynda.Persistence.Entities;
 
 namespace Mynda.Persistence.DbContext
 {
-    public class MyndaDBContext : IdentityDbContext<Entities.Mynda>
+    public class MyndaDbContext : IdentityDbContext<User>
     {
-        public MyndaDBContext(DbContextOptions<MyndaDBContext> options) : base(options)
-        {
-        }
+        public MyndaDbContext(DbContextOptions<MyndaDbContext> options) : base(options)
+        {}
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.EnableSensitiveDataLogging();
         }
+
+        public DbSet<Myndas> Myndas { get; set; }
+
     }
 }
