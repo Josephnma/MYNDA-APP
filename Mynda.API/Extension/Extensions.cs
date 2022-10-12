@@ -27,20 +27,10 @@ namespace Mynda.API.Extension
 
         public static void ConfigureIdentity(this IServiceCollection services)
         {
-            var builder = services.AddIdentityCore<User>(q => q.User.RequireUniqueEmail = true);
+            var builder = services.AddDefaultIdentity<User>(q => q.User.RequireUniqueEmail = true);
 
             builder = new IdentityBuilder(builder.UserType, typeof(IdentityRole), services);
             builder.AddEntityFrameworkStores<MyndaDbContext>().AddDefaultTokenProviders();
         }
-
-
-        public static void ConfigureNpgsqlContext(this IServiceCollection services, IConfiguration configuration) =>
-            services.AddDbContext<MyndaDbContext>(options =>
-                options.UseNpgsql(configuration.GetConnectionString("sqlConnection"))
-                );
-
-
-       
-
     }
 }

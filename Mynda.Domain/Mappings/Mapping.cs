@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AutoMapper;
+using Mynda.Persistence.Entities;
+using Mynda.Shared.DTOs;
 
 namespace Mynda.Domain.Mappings
 {
-    public class Mapping
+    public class Mapping: Profile
     {
+        public Mapping()
+        {
+            CreateMap<User, UserDTO>().ReverseMap();
+            CreateMap<Myndas, MyndasDTO>().ReverseMap();
+        }
     }
 }
