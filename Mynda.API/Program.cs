@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using Mynda.API.CustomMiddleware;
 using Mynda.API.Extension;
 using Mynda.Domain.Mappings;
 using Mynda.Domain.Services;
