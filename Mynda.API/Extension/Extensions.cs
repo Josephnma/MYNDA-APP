@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Mynda.Persistence.DbContext;
 using Mynda.Persistence.Entities;
 using Serilog;
+using System.Text;
 
 namespace Mynda.API.Extension
 {
@@ -32,5 +35,26 @@ namespace Mynda.API.Extension
             builder = new IdentityBuilder(builder.UserType, typeof(IdentityRole), services);
             builder.AddEntityFrameworkStores<MyndaDbContext>().AddDefaultTokenProviders();
         }
-    }
+
+        public static void ConfigureJWT(this IServiceCollection services, IConfiguration Configuration)
+        {
+            services.AddAuthentication(opt =>
+            {
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+               .AddJwtBearer(opt =>
+               {
+                   opt.TokenValidationParameters = new TokenValidationParameters
+                   {
+                       ValidateIssuer = false,
+                       ValidateAudience = false,
+                       ValidateLifetime = true,
+                       ValidateIssuerSigningKey = true,
+                       IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Jwt: TokenKey"))
+
+                   };
+               });
+        }
+    } 
 }

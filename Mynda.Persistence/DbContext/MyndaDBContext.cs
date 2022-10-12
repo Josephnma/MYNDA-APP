@@ -14,6 +14,13 @@ namespace Mynda.Persistence.DbContext
             optionsBuilder.EnableSensitiveDataLogging();
         }
 
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.ApplyConfiguration(new UserRoles());
+        }
+
         public DbSet<Myndas> Myndas { get; set; }
 
     }

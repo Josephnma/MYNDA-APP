@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Mynda.API.CustomMiddleware;
+using Mynda.Domain.Services;
 using Mynda.Persistence.Entities;
 using Mynda.Shared.DTOs;
 
@@ -13,25 +14,31 @@ namespace Mynda.API.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly ILogger<AccountController> _logger;
         private readonly IMapper _mapper;
+        private readonly IAuthManager _authManager;
 
 
         public AccountController(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             ILogger<AccountController> logger,
-            IMapper mapper)
+            IMapper mapper,
+            IAuthManager authManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _mapper = mapper;
+            _authManager = authManager;
         }
 
 
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        
         [HttpPost]
         [Route("register")]
-        
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RegisterUser([FromBody] UserDTO userDTO)
         {
             _logger.LogInformation($"Registration attempt for {userDTO.Email}");
@@ -44,7 +51,7 @@ namespace Mynda.API.Controllers
             {
                 var user = _mapper.Map<User>(userDTO);
                 user.UserName = userDTO.Email;
-                var result = await _userManager.CreateAsync(user);
+                var result = await _userManager.CreateAsync(user, userDTO.Password);
                 
                 if (!result.Succeeded)
                 {
@@ -55,7 +62,8 @@ namespace Mynda.API.Controllers
                     return BadRequest($"User Registration Attempt Failed");
                 }
 
-                return Ok();
+                await _userManager.AddToRolesAsync(user, userDTO.Roles);
+                return Accepted();
             }
             catch (Exception e)
             {
@@ -67,10 +75,14 @@ namespace Mynda.API.Controllers
 
 
 
-        [ProducesResponseType(StatusCodes.Status200OK)]
+ 
         [HttpPost]
         [Route("login")]
-     
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
         public async Task<IActionResult> LoginUser([FromBody] LoginUserDTO userDTO)
         {
             _logger.LogInformation($"Login attempt for {userDTO.Email}");
@@ -81,14 +93,12 @@ namespace Mynda.API.Controllers
 
             try
             {
-                var result = await _signInManager.PasswordSignInAsync(userDTO.Email, userDTO.Password, false, false);
-
-                if (!result.Succeeded)
+                if (!await _authManager.ValidateUser(userDTO))
                 {
-                    return Unauthorized(userDTO);
+                    return Unauthorized();
                 }
-
-                return Accepted();
+               
+                return Accepted(new { Token = await _authManager.CreateToken() });
             }
             catch (Exception e)
             {

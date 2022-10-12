@@ -3,6 +3,7 @@ using Microsoft.OpenApi.Models;
 using Mynda.API.CustomMiddleware;
 using Mynda.API.Extension;
 using Mynda.Domain.Mappings;
+using Mynda.Domain.Services;
 using Mynda.Persistence.DbContext;
 using Mynda.Persistence.UnitOfWork;
 using Serilog;
@@ -45,11 +46,15 @@ builder.Services.AddAuthentication();
 
 builder.Services.ConfigureIdentity();
 
+builder.Services.ConfigureJWT(configuration);
+
 builder.Services.ConfigureCors();
 
 builder.Services.AddAutoMapper(typeof(Mapping));
 
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+
+builder.Services.AddScoped<IAuthManager, AuthManager>();
 
 builder.Services.AddControllers().AddNewtonsoftJson(op => 
     op.SerializerSettings.ReferenceLoopHandling = 
@@ -60,6 +65,32 @@ builder.Services.AddControllers().AddNewtonsoftJson(op =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = @" JWT Authorization header using bearer scheme, 
+                   Enter 'Bearer' follow by Space and enter your token in the text input below. 
+                    Example: 'Bearer 12345abcdef'",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference(){
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    },
+                    Scheme = "0auth2",
+                    Name = "Bearer",
+                    In = ParameterLocation.Header
+                },
+                new List<string>()
+            }
+        });
     c.SwaggerDoc("v1", new OpenApiInfo{Title = "Mynda", Version = "v1"});
 });
 
