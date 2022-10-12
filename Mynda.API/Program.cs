@@ -105,11 +105,12 @@ if (app.Environment.IsDevelopment())
 else
     app.UseHsts();
 
-app.UseMiddleware<GlobalMiddleware>();
 
 app.UseSwagger();
 
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Mynda v1"));
+
+app.ConfigureExceptionHandler();
 
 app.UseSerilogRequestLogging();
 
