@@ -1,36 +1,95 @@
 ﻿using Mynda.API.CustomMiddleware;
-using Serilog;
+using System.Net;
+using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
+using Mynda.API.Exceptions;
+using Logger = Serilog.ILogger;
+using KeyNotFoundException = Mynda.API.Exceptions.KeyNotFoundException;
+using NotImplementedException = Mynda.API.Exceptions.NotImplementedException;
+
 
 namespace Mynda.API.CustomMiddleware
 {
     public class GlobalMiddleware
     {
-        private readonly RequestDelegate next;
+        private readonly RequestDelegate _next;
+        private readonly Logger _logger;
+        private readonly IHostEnvironment _env;
 
-        public GlobalMiddleware(RequestDelegate next)
+        public GlobalMiddleware(RequestDelegate next, IHostEnvironment env)
         {
-            this.next = next;
+            _next = next;
+            _env = env;
         }
 
-        public async Task Invoke(HttpContext httpContext)
+        public async Task InvokeAsync(HttpContext httpContext)
         {
-            var start = DateTime.UtcNow;
-            await httpContext.Response.WriteAsync("Our Middleware");
-            await next(httpContext);
-            Log.Information($"Request {httpContext.Request.Path}: {(DateTime.UtcNow - start).TotalMilliseconds}ms");
+            try
+            {
+                await _next(httpContext);
+            }
+            catch (Exception ex)
+            {
+                _logger.Information(ex.Message);
+                httpContext.Response.ContentType = "application/json";
+                httpContext.Response.StatusCode = 500;
+                var response = new ProblemDetails
+                {
+                    Status = 500, 
+                    Detail = _env.IsDevelopment() ? ex.StackTrace?.ToString() : null,
+                    Title = ex.Message
+                };
+                var options = new JsonSerializerOptions {PropertyNamingPolicy = JsonNamingPolicy.CamelCase};
+                var json = JsonSerializer.Serialize(response, options);
+               await httpContext.Response.WriteAsync(json);
+            }
+        }
+
+        private static Task HandleExceptionAsync(HttpContext httpContext, Exception exception)
+        {
+            HttpStatusCode status;
+            var stackTrace = String.Empty;
+            string message;
+            var exceptionType = exception.GetType();
+            if (exceptionType == typeof(BadRequestException))
+            {
+                message = exception.Message;
+                status = HttpStatusCode.BadRequest;
+                stackTrace = exception.StackTrace;
+            } else if (exceptionType == typeof(NotFoundException))
+            {
+                message = exception.Message;
+                status = HttpStatusCode.NotFound;
+                stackTrace = exception.StackTrace;
+            } else if (exceptionType == typeof(NotImplementedException))
+            {
+                message = exception.Message;
+                status = HttpStatusCode.NotImplemented;
+                stackTrace = exception.StackTrace;
+            } else if (exceptionType == typeof(KeyNotFoundException))
+            {
+                message = exception.Message;
+                status = HttpStatusCode.Unauthorized;
+                stackTrace = exception.StackTrace;
+            }
+            else
+            {
+                message = exception.Message;
+                status = HttpStatusCode.InternalServerError;
+                stackTrace = exception.StackTrace;
+            }
+
+            var exceptionResult = JsonSerializer.Serialize(new
+            {
+                error = message, stackTrace
+            });
+            
+            httpContext.Response.ContentType = "application/json";
+            httpContext.Response.StatusCode = (int)status;
+            return httpContext.Response.WriteAsync(exceptionResult);
+
         }
     }
 }
 
-public static class GlobalExtensions
-{
-    public static IApplicationBuilder UseMynda(this IApplicationBuilder app)
-    {
-        return app.UseMiddleware<GlobalMiddleware>();
-    }
 
-    /*public static void AddMyndaService(this IServiceCollection services)
-    {
-        services.AddTransient<I>();
-    }*/
-}
