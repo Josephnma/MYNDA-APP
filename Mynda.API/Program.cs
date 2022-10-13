@@ -16,7 +16,7 @@ var configuration = new ConfigurationBuilder()
                 .Build();
 Log.Logger = new LoggerConfiguration()
        .ReadFrom.Configuration(configuration)
-       .CreateLogger();
+       .CreateBootstrapLogger();
 
 try
 {
@@ -33,7 +33,9 @@ finally
 }
 
 
-builder.Host.UseSerilog();
+builder.Host.UseSerilog((ctx, lc) => lc
+    .WriteTo.Console()
+    .WriteTo.Seq("http://localhost:5341"));
 
 builder.Services.AddDbContext<MyndaDbContext>(options =>
 {

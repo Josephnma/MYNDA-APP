@@ -26,7 +26,6 @@ namespace Mynda.Persistence.Entities
         public string? Location { get; set; }
 
         [Required]
-        [StringLength(50)]
         public DateTime Period { get; set; }
 
         [Required]
