@@ -55,7 +55,7 @@ namespace Mynda.Shared.DTOs
 
         public List<string>? Category { get; set; } 
 
-        public DateTime DateOfBirth { get; set; }   
+        public string? DateOfBirth { get; set; }   
         
         public List<string>? StatesWillingToRelocate { get; set; }
 
