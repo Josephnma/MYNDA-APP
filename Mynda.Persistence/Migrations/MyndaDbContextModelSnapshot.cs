@@ -47,6 +47,36 @@ namespace Mynda.Persistence.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "29a1a557-2e64-43eb-b54a-f776840cdc95",
+                            ConcurrencyStamp = "82b10748-8e81-4c6d-9b2c-d123f771d986",
+                            Name = "Mynda",
+                            NormalizedName = "MYNDA"
+                        },
+                        new
+                        {
+                            Id = "1b105b93-27d5-4423-9f22-048806fcf0d0",
+                            ConcurrencyStamp = "9d6c5b9a-4dfd-431b-bbe3-38c6fb56f11a",
+                            Name = "Employer",
+                            NormalizedName = "EMPLOYER"
+                        },
+                        new
+                        {
+                            Id = "87af42e9-47ae-4349-9200-3735fc6ba81f",
+                            ConcurrencyStamp = "40a1b205-5113-4499-a653-51e27498a7ff",
+                            Name = "Agent",
+                            NormalizedName = "AGENT"
+                        },
+                        new
+                        {
+                            Id = "f443f366-f461-4750-b8d0-4100c2fa82c3",
+                            ConcurrencyStamp = "887cec52-9cd6-4631-ba87-1a39a2396c6c",
+                            Name = "Hospital",
+                            NormalizedName = "HOSPITAL"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -102,10 +132,12 @@ namespace Mynda.Persistence.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -142,10 +174,12 @@ namespace Mynda.Persistence.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");

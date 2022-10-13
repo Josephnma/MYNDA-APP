@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Mynda.API.CustomMiddleware;
+using Mynda.Domain.Services;
 using Mynda.Persistence.Entities;
 using Mynda.Shared.DTOs;
 
@@ -13,25 +13,31 @@ namespace Mynda.API.Controllers
         private readonly SignInManager<User> _signInManager;
         private readonly ILogger<AccountController> _logger;
         private readonly IMapper _mapper;
+        private readonly IAuthManager _authManager;
 
 
         public AccountController(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             ILogger<AccountController> logger,
-            IMapper mapper)
+            IMapper mapper,
+            IAuthManager authManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _mapper = mapper;
+            _authManager = authManager;
         }
 
 
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        
         [HttpPost]
         [Route("register")]
-        
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RegisterUser([FromBody] UserDTO userDTO)
         {
             _logger.LogInformation($"Registration attempt for {userDTO.Email}");
@@ -40,37 +46,35 @@ namespace Mynda.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            try
-            {
-                var user = _mapper.Map<User>(userDTO);
-                user.UserName = userDTO.Email;
-                var result = await _userManager.CreateAsync(user);
+           
+            var user = _mapper.Map<User>(userDTO);
+            user.UserName = userDTO.Email;
+            var result = await _userManager.CreateAsync(user, userDTO.Password);
                 
-                if (!result.Succeeded)
-                {
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError(error.Code, error.Description);
-                    }
-                    return BadRequest($"User Registration Attempt Failed");
-                }
-
-                return Ok();
-            }
-            catch (Exception e)
+            if (!result.Succeeded)
             {
-                _logger.LogError(e, $"Something went wrong in the {nameof(RegisterUser)}");
-                return Problem($"Something went wrong in the {nameof(RegisterUser)}", statusCode: 500);
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(error.Code, error.Description);
+                }
+                return BadRequest($"User Registration Attempt Failed");
             }
+
+            await _userManager.AddToRolesAsync(user, userDTO.Roles);
+            return Accepted();
 
         }
 
 
 
-        [ProducesResponseType(StatusCodes.Status200OK)]
+ 
         [HttpPost]
         [Route("login")]
-     
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
         public async Task<IActionResult> LoginUser([FromBody] LoginUserDTO userDTO)
         {
             _logger.LogInformation($"Login attempt for {userDTO.Email}");
@@ -79,24 +83,13 @@ namespace Mynda.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            try
+            
+            if (!await _authManager.ValidateUser(userDTO))
             {
-                var result = await _signInManager.PasswordSignInAsync(userDTO.Email, userDTO.Password, false, false);
-
-                if (!result.Succeeded)
-                {
-                    return Unauthorized(userDTO);
-                }
-
-                return Accepted();
+                return Unauthorized();
             }
-            catch (Exception e)
-            {
-                _logger.LogError(e, $"Something went wrong in the {nameof(LoginUser)}");
-                return Problem($"Something went wrong in the {nameof(LoginUser)}", statusCode: 500);
-
-            }
-
+               
+            return Accepted(new { Token = await _authManager.CreateToken() });
         }
     }
 }
