@@ -12,8 +12,8 @@ using Mynda.Persistence.DbContext;
 namespace Mynda.Persistence.Migrations
 {
     [DbContext(typeof(MyndaDbContext))]
-    [Migration("20221012103720_AddedDefaultRoles")]
-    partial class AddedDefaultRoles
+    [Migration("20221017145413_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -53,29 +53,29 @@ namespace Mynda.Persistence.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "29a1a557-2e64-43eb-b54a-f776840cdc95",
-                            ConcurrencyStamp = "82b10748-8e81-4c6d-9b2c-d123f771d986",
+                            Id = "9cfc97a0-9885-4946-8468-eeb8a2855e5a",
+                            ConcurrencyStamp = "64b1f5d2-b565-42ec-8e4f-25d5f8d3d267",
                             Name = "Mynda",
                             NormalizedName = "MYNDA"
                         },
                         new
                         {
-                            Id = "1b105b93-27d5-4423-9f22-048806fcf0d0",
-                            ConcurrencyStamp = "9d6c5b9a-4dfd-431b-bbe3-38c6fb56f11a",
+                            Id = "0256e4b8-d4ab-4b7b-ba4e-4a1ccb0c6c06",
+                            ConcurrencyStamp = "80057cf3-eae7-4e52-b9dc-23e15db825fe",
                             Name = "Employer",
                             NormalizedName = "EMPLOYER"
                         },
                         new
                         {
-                            Id = "87af42e9-47ae-4349-9200-3735fc6ba81f",
-                            ConcurrencyStamp = "40a1b205-5113-4499-a653-51e27498a7ff",
+                            Id = "e0ec2ff7-aa07-4d33-be8c-7063316fc458",
+                            ConcurrencyStamp = "9d93c8fa-6e00-42e7-9d0e-581648f2c548",
                             Name = "Agent",
                             NormalizedName = "AGENT"
                         },
                         new
                         {
-                            Id = "f443f366-f461-4750-b8d0-4100c2fa82c3",
-                            ConcurrencyStamp = "887cec52-9cd6-4631-ba87-1a39a2396c6c",
+                            Id = "b413e5ca-36d3-457a-94cc-91a55301bd87",
+                            ConcurrencyStamp = "e4b8643d-fd4f-48d5-bfa0-fd66822dfe74",
                             Name = "Hospital",
                             NormalizedName = "HOSPITAL"
                         });
@@ -189,6 +189,80 @@ namespace Mynda.Persistence.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Mynda.Persistence.Entities.Agents", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("AboutMe")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BVN")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CompanyEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CompanyName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CompanyPhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LGA")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NIN")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OfficeAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhotoUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Religion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SelectService")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Sex")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StateOfOrigin")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UtilityBill")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Agents");
                 });
 
             modelBuilder.Entity("Mynda.Persistence.Entities.Education", b =>
@@ -480,7 +554,6 @@ namespace Mynda.Persistence.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime>("Period")
-                        .HasMaxLength(50)
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -537,6 +610,17 @@ namespace Mynda.Persistence.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Mynda.Persistence.Entities.Agents", b =>
+                {
+                    b.HasOne("Mynda.Persistence.Entities.User", "Users")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Mynda.Persistence.Entities.Myndas", b =>

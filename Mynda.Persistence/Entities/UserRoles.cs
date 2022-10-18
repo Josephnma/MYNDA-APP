@@ -7,6 +7,7 @@ namespace Mynda.Persistence.Entities
     public class UserRoles : IEntityTypeConfiguration<IdentityRole>
     {
         public Myndas? Mynda { get; set; }
+        public Agents? Agent { get; set; }
         public AppRole? Role { get; set; }
 
         public void Configure(EntityTypeBuilder<IdentityRole> builder)

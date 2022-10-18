@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Mynda.Persistence.Migrations
 {
-    public partial class AddedDefaultRoles : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -120,7 +120,7 @@ namespace Mynda.Persistence.Migrations
                     JobTitle = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     CompanyName = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Location = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Period = table.Column<DateTime>(type: "datetime2", maxLength: 50, nullable: false),
+                    Period = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
                 },
                 constraints: table =>
@@ -145,6 +145,40 @@ namespace Mynda.Persistence.Migrations
                         name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Agents",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Sex = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StateOfOrigin = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BVN = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NIN = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UtilityBill = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CompanyEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CompanyPhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OfficeAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SelectService = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LGA = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Religion = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AboutMe = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhotoUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Agents", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Agents_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -304,11 +338,16 @@ namespace Mynda.Persistence.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "1b105b93-27d5-4423-9f22-048806fcf0d0", "9d6c5b9a-4dfd-431b-bbe3-38c6fb56f11a", "Employer", "EMPLOYER" },
-                    { "29a1a557-2e64-43eb-b54a-f776840cdc95", "82b10748-8e81-4c6d-9b2c-d123f771d986", "Mynda", "MYNDA" },
-                    { "87af42e9-47ae-4349-9200-3735fc6ba81f", "40a1b205-5113-4499-a653-51e27498a7ff", "Agent", "AGENT" },
-                    { "f443f366-f461-4750-b8d0-4100c2fa82c3", "887cec52-9cd6-4631-ba87-1a39a2396c6c", "Hospital", "HOSPITAL" }
+                    { "0256e4b8-d4ab-4b7b-ba4e-4a1ccb0c6c06", "80057cf3-eae7-4e52-b9dc-23e15db825fe", "Employer", "EMPLOYER" },
+                    { "9cfc97a0-9885-4946-8468-eeb8a2855e5a", "64b1f5d2-b565-42ec-8e4f-25d5f8d3d267", "Mynda", "MYNDA" },
+                    { "b413e5ca-36d3-457a-94cc-91a55301bd87", "e4b8643d-fd4f-48d5-bfa0-fd66822dfe74", "Hospital", "HOSPITAL" },
+                    { "e0ec2ff7-aa07-4d33-be8c-7063316fc458", "9d93c8fa-6e00-42e7-9d0e-581648f2c548", "Agent", "AGENT" }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Agents_UserId",
+                table: "Agents",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -382,6 +421,9 @@ namespace Mynda.Persistence.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Agents");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
