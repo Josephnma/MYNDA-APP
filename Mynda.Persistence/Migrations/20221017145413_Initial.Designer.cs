@@ -12,8 +12,8 @@ using Mynda.Persistence.DbContext;
 namespace Mynda.Persistence.Migrations
 {
     [DbContext(typeof(MyndaDbContext))]
-    [Migration("20221006163748_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20221017145413_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -49,6 +49,36 @@ namespace Mynda.Persistence.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "9cfc97a0-9885-4946-8468-eeb8a2855e5a",
+                            ConcurrencyStamp = "64b1f5d2-b565-42ec-8e4f-25d5f8d3d267",
+                            Name = "Mynda",
+                            NormalizedName = "MYNDA"
+                        },
+                        new
+                        {
+                            Id = "0256e4b8-d4ab-4b7b-ba4e-4a1ccb0c6c06",
+                            ConcurrencyStamp = "80057cf3-eae7-4e52-b9dc-23e15db825fe",
+                            Name = "Employer",
+                            NormalizedName = "EMPLOYER"
+                        },
+                        new
+                        {
+                            Id = "e0ec2ff7-aa07-4d33-be8c-7063316fc458",
+                            ConcurrencyStamp = "9d93c8fa-6e00-42e7-9d0e-581648f2c548",
+                            Name = "Agent",
+                            NormalizedName = "AGENT"
+                        },
+                        new
+                        {
+                            Id = "b413e5ca-36d3-457a-94cc-91a55301bd87",
+                            ConcurrencyStamp = "e4b8643d-fd4f-48d5-bfa0-fd66822dfe74",
+                            Name = "Hospital",
+                            NormalizedName = "HOSPITAL"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -104,10 +134,12 @@ namespace Mynda.Persistence.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -144,10 +176,12 @@ namespace Mynda.Persistence.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -155,6 +189,80 @@ namespace Mynda.Persistence.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Mynda.Persistence.Entities.Agents", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("AboutMe")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BVN")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CompanyEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CompanyName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CompanyPhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LGA")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NIN")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OfficeAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhotoUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Religion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SelectService")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Sex")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StateOfOrigin")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UtilityBill")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Agents");
                 });
 
             modelBuilder.Entity("Mynda.Persistence.Entities.Education", b =>
@@ -446,7 +554,6 @@ namespace Mynda.Persistence.Migrations
                         .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime>("Period")
-                        .HasMaxLength(50)
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -503,6 +610,17 @@ namespace Mynda.Persistence.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Mynda.Persistence.Entities.Agents", b =>
+                {
+                    b.HasOne("Mynda.Persistence.Entities.User", "Users")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Mynda.Persistence.Entities.Myndas", b =>

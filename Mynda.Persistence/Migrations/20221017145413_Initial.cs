@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Mynda.Persistence.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -120,7 +120,7 @@ namespace Mynda.Persistence.Migrations
                     JobTitle = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     CompanyName = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Location = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    Period = table.Column<DateTime>(type: "datetime2", maxLength: 50, nullable: false),
+                    Period = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
                 },
                 constraints: table =>
@@ -150,6 +150,40 @@ namespace Mynda.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Agents",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Sex = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StateOfOrigin = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BVN = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NIN = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UtilityBill = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CompanyEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CompanyPhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OfficeAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SelectService = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LGA = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Religion = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AboutMe = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhotoUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Agents", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Agents_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetUserClaims",
                 columns: table => new
                 {
@@ -174,8 +208,8 @@ namespace Mynda.Persistence.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
@@ -219,8 +253,8 @@ namespace Mynda.Persistence.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -299,6 +333,22 @@ namespace Mynda.Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "0256e4b8-d4ab-4b7b-ba4e-4a1ccb0c6c06", "80057cf3-eae7-4e52-b9dc-23e15db825fe", "Employer", "EMPLOYER" },
+                    { "9cfc97a0-9885-4946-8468-eeb8a2855e5a", "64b1f5d2-b565-42ec-8e4f-25d5f8d3d267", "Mynda", "MYNDA" },
+                    { "b413e5ca-36d3-457a-94cc-91a55301bd87", "e4b8643d-fd4f-48d5-bfa0-fd66822dfe74", "Hospital", "HOSPITAL" },
+                    { "e0ec2ff7-aa07-4d33-be8c-7063316fc458", "9d93c8fa-6e00-42e7-9d0e-581648f2c548", "Agent", "AGENT" }
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Agents_UserId",
+                table: "Agents",
+                column: "UserId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -371,6 +421,9 @@ namespace Mynda.Persistence.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Agents");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 

@@ -1,13 +1,14 @@
-﻿using Mynda.Persistence.Entities;
 using System.ComponentModel.DataAnnotations;
 
-namespace Mynda.Shared.DTOs
+namespace Agents.Shared.DTOs
 {
-    public class MyndasDTO
+    public class AgentsDTO
     {
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
+        
+        public  string UserId { get; set; }
 
         [Required]
         [DataType(DataType.EmailAddress)]
@@ -18,9 +19,7 @@ namespace Mynda.Shared.DTOs
 
         [Required, StringLength(20, ErrorMessage = "Your Password is limited to {2} to {1} characters", MinimumLength = 3)]
         public string Password { get; set; }
-
-        [Required, StringLength(500)]
-        public string? ResidentialAddress { get; set; }
+        
 
         [Required, StringLength(50)]
         public string? PhotoUrl { get; set; }
@@ -35,40 +34,34 @@ namespace Mynda.Shared.DTOs
         public string? StateOfOrigin { get; set; }
 
         [Required, StringLength(15)]
-        public string? LGAOfOrigin { get; set; }
+        public string? LGA { get; set; }
 
 
         public enum Sex { Male , Female }
 
         [Required, StringLength(10)]
-        public string? Height { get; set; }
+        public string? BVN { get; set; }
 
         [Required, StringLength(15)]
         public string? Religion { get; set; }
 
         [Required, StringLength(10)]
-        public string? Disability { get; set; }
+        public string? NIN { get; set; }
 
-        public string? Allergies { get; set; }
-
-        public string? SalaryExpectation { get; set; }
-
-        public List<string>? Category { get; set; } 
-
-        public string? DateOfBirth { get; set; }   
+        public string? CompanyName { get; set; }
         
-        public List<string>? StatesWillingToRelocate { get; set; }
+        public string? UtilityBill { get; set; }
 
-        public Education EducationLevel { get; set; }
+        public string? CompanyEmail { get; set; }
 
-        public WorkExperience WorkExperience { get; set; }
+        public string? OfficeAddress { get; set; } 
 
-        public string ClearanceForm { get; set; }
-
-        public Guarantor GuarantorDetails { get; set; }
-
-        public Reviews Reviews { get; set; }
+        public string? Address { get; set; } 
+        public string? CompanyPhoneNumber { get; set; }   
         
+        public List<string>? SelectService { get; set; }
+
+        }
 
     }
-}
+

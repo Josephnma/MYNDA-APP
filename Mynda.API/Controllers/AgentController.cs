@@ -1,23 +1,19 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+using Agents.Shared.DTOs;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Mynda.Persistence.Entities;
 using Mynda.Persistence.UnitOfWork;
-using Mynda.Shared.DTOs;
 using Serilog.Core;
 
-namespace Mynda.API.Controllers
-{
+namespace Mynda.API.Controllers{
     [ApiController]
     [Route("[controller]/api/vi")]
-    public class MyndaController : ControllerBase
+    public class AgentController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly Logger _logger;
 
-        public MyndaController(IUnitOfWork unitOfWork, IMapper mapper)
+        public AgentController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -26,22 +22,22 @@ namespace Mynda.API.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetMyndas()
+        public async Task<IActionResult> GetAgents()
         {
-            var myndas = await _unitOfWork.Myndas.GetAll();
-            var result = _mapper.Map<IList<MyndasDTO>>(myndas);
+            var agents = await _unitOfWork.Agents.GetAll();
+            var result = _mapper.Map<IList<AgentsDTO>>(agents);
             return Ok(result);
         }
 
 
-        [HttpGet("{id:int}", Name = "GetMyndasById")]
+        [HttpGet("{id:int}", Name = "GetAgentsById")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
        
-        public async Task<IActionResult> GetMyndasById(string id)
+        public async Task<IActionResult> GetAgentsById(string id)
         {
-            var mynda = await _unitOfWork.Myndas.Get(q => q.Id.Equals(id), new List<string> { "Myndas" });
-            var result = _mapper.Map<MyndasDTO>(mynda);
+            var agent = await _unitOfWork.Agents.Get(q => q.Id.Equals(id), new List<string> { "Agents" });
+            var result = _mapper.Map<AgentsDTO>(agent);
             return Ok(result);
         }
 
@@ -50,7 +46,7 @@ namespace Mynda.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateMynda([FromBody] MyndasDTO myndasDTO)
+        public async Task<IActionResult> CreateAgent([FromBody] AgentsDTO agentDTO)
         {
             if (!ModelState.IsValid)
             {
@@ -58,11 +54,11 @@ namespace Mynda.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var mynda = _mapper.Map<Myndas>(myndasDTO);
-            await _unitOfWork.Myndas.Insert(mynda);
+            var agent = _mapper.Map<Persistence.Entities.Agents>(agentDTO);
+            await _unitOfWork.Agents.Insert(agent);
             await _unitOfWork.Save();
 
-            return CreatedAtRoute("GetMyndasById", new {id = mynda.Id}, mynda );
+            return CreatedAtRoute("GetAgentsById", new {id = agent.Id}, agent );
         }
 
         //[Authorize]
@@ -70,21 +66,21 @@ namespace Mynda.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         //[ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateMynda(string id, [FromBody] MyndasDTO myndasDTO)
+        public async Task<IActionResult> UpdateAgent(string id, [FromBody] AgentsDTO agentsDTO)
         {
             if(!ModelState.IsValid || id.Equals("0"))
             {
                 return BadRequest(ModelState);
             } 
 
-            var mynda = await _unitOfWork.Myndas.Get(q => q.Id.Equals(id));
-            if(mynda == null)
+            var agent = await _unitOfWork.Agents.Get(q => q.Id.Equals(id));
+            if(agent == null)
             {
                 return BadRequest("Submitted data is invalid");
             }
 
-            _mapper.Map(myndasDTO, mynda);
-            _unitOfWork.Myndas.Update(mynda);
+            _mapper.Map(agentsDTO, agent);
+            _unitOfWork.Agents.Update(agent);
             await _unitOfWork.Save();
 
             return NoContent();
@@ -95,25 +91,25 @@ namespace Mynda.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType (StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> DeleteMynda(string id)
+        public async Task<IActionResult> DeleteAgent(string id)
         {
             if (id.Equals("0"))
             {
                 return BadRequest();
             }
 
-            var mynda = await _unitOfWork.Myndas.Get(q => q.Id.Equals(id));
-            if (mynda == null)
+            var agent = await _unitOfWork.Agents.Get(q => q.Id.Equals(id));
+            if (agent == null)
             {
                 return BadRequest("Submitted data is invalid");
             }
 
-            await _unitOfWork.Myndas.Delete(id);
+            await _unitOfWork.Agents.Delete(id);
             await _unitOfWork.Save();
 
             return NoContent();
         }
-
-
+        
     }
 }
+
