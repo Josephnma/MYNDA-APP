@@ -23,6 +23,5 @@ namespace Mynda.Persistence.DbContext
 
         public DbSet<Myndas> Myndas { get; set; }
         public DbSet<Agents> Agents { get; set; }
-        public DbSet<AgentDashBoard> AgentsDashBoard { get; set; }
+        }
     }
-}
