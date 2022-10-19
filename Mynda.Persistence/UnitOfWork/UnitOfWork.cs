@@ -21,8 +21,6 @@ namespace Mynda.Persistence.UnitOfWork
         public IGenericRepository<Entities.Myndas> Myndas  => _myndas ??= new GenericRepository<Myndas>(_context);
         public IGenericRepository<Entities.Agents> Agents => _agents ??= new GenericRepository<Agents>(_context);
         
-        public IGenericRepository<Entities.AgentDashBoard> AgentDashBoard => _agentdashboard ??= new GenericRepository<AgentDashBoard>(_context);
-
         public void Dispose()
         {
             _context.Dispose();
