@@ -7,9 +7,6 @@ namespace Mynda.Persistence.UnitOfWork
     {
         IGenericRepository<Entities.Myndas> Myndas { get; }
         IGenericRepository<Entities.Agents> Agents { get; }
-        
-        
-        IGenericRepository<Entities.AgentDashBoard> AgentDashBoard { get; } 
 
         Task Save();
 
