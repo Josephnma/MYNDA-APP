@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Mynda.Persistence.DbContext;
 
@@ -11,9 +12,10 @@ using Mynda.Persistence.DbContext;
 namespace Mynda.Persistence.Migrations
 {
     [DbContext(typeof(MyndaDbContext))]
-    partial class MyndaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221019105442_remigration")]
+    partial class remigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

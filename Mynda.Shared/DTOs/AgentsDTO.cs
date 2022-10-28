@@ -23,6 +23,9 @@ namespace Agents.Shared.DTOs
 
         [Required, StringLength(50)]
         public string? PhotoUrl { get; set; }
+        
+        [Required, StringLength(50)]
+        public string? NINImageUrl { get; set; }
 
         [Required, StringLength(500)]
         public string? AboutMe { get; set; }
@@ -51,6 +54,10 @@ namespace Agents.Shared.DTOs
         public string? CompanyName { get; set; }
         
         public string? UtilityBill { get; set; }
+        
+        public string? Shares { get; set; }
+        
+        public string? Role { get; set; }
 
         public string? CompanyEmail { get; set; }
 
@@ -60,6 +67,7 @@ namespace Agents.Shared.DTOs
         public string? CompanyPhoneNumber { get; set; }   
         
         public List<string>? SelectService { get; set; }
+        
 
         }
 

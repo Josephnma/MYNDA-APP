@@ -110,6 +110,27 @@ namespace Mynda.API.Controllers{
             return NoContent();
         }
         
+        //Create Agent ShareHolder
+        // [HttpPost]
+        // [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        // [ProducesResponseType(StatusCodes.Status201Created)]
+        // [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        // public async Task<IActionResult> CreateAgentShareHolder([FromBody] AgentsDTO agentDTO)
+        // {
+        //     if (!ModelState.IsValid)
+        //     {
+        //         // _logger.Error($"Invalid POST attempt in {nameof(CreateMynda)}");
+        //         return BadRequest(ModelState);
+        //     }
+        //
+        //     var agent = _mapper.Map<Persistence.Entities.Agents>(agentDTO);
+        //     await _unitOfWork.Agents.Insert(agent);
+        //     await _unitOfWork.Save();
+        //
+        //     return CreatedAtRoute("GetAgentsById", new {id = agent.Id}, agent );
+        // }
+        //
+        //
     }
 }
 

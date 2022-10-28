@@ -16,6 +16,10 @@ namespace Mynda.Persistence.Entities
         public string UserId { get; set; }
         public User Users { get; set; }
         
+        [ForeignKey("ShareHolderDetails")]
+        public int ShareHolder { get; set; }
+        public ShareHolder ShareHolderDetails { get; set; }
+        
         public string? Sex { get; set; }
         
         
